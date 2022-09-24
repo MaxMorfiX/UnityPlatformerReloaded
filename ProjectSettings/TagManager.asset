@@ -6,7 +6,7 @@ TagManager:
   tags:
   - block
   - obstacle
-  - ground
+  - finish
   layers:
   - Default
   - TransparentFX

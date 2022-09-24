@@ -4,7 +4,7 @@ using UnityEngine.UI;
 public class playerController : MonoBehaviour {
 
     private Rigidbody2D rBody;
-    [SerializeField]private GameObject camera;
+    [SerializeField]private GameObject cameraObj;
     [SerializeField]private Text rotatePlayerOrNotButtonText;
 
     [Range(5, 500)]public float jumpForce = 100f;
@@ -58,8 +58,18 @@ public class playerController : MonoBehaviour {
                 return;
             }
 
-            camera.GetComponent<gameUI>().gameOver();
+            cameraObj.GetComponent<gameUI>().gameOver();
             Debug.Log("wasted");
+            
+            GetComponent<Rigidbody2D>().velocity = new Vector2(0, 0);
+            GetComponent<Rigidbody2D>().gravityScale = 0.0f;
+
+        }
+        if(col.tag == "finish") {
+            lives = 0;
+
+            cameraObj.GetComponent<gameUI>().levelCompleted();
+            Debug.Log("won");
             
             GetComponent<Rigidbody2D>().velocity = new Vector2(0, 0);
             GetComponent<Rigidbody2D>().gravityScale = 0.0f;
@@ -79,11 +89,11 @@ public class playerController : MonoBehaviour {
 
         if(rotatePlayer) {
             rotatePlayerOrNotButtonText.text = "Don't Rotate Player";
-            GetComponent<Rigidbody2D>().constraints = RigidbodyConstraints2D.FreezeRotation;
+            GetComponent<Rigidbody2D>().constraints = RigidbodyConstraints2D.None;
         }
         else if(!rotatePlayer) {
             rotatePlayerOrNotButtonText.text = "Rotate Player";
-            GetComponent<Rigidbody2D>().constraints = RigidbodyConstraints2D.None;
+            GetComponent<Rigidbody2D>().constraints = RigidbodyConstraints2D.FreezeRotation;
         }
     }
     
