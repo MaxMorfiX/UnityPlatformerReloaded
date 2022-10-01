@@ -13,6 +13,8 @@ public class playerController : MonoBehaviour {
 
     public int startLives = 1;
     public int lives = 1;
+    private Vector2 freezedVelocity;
+    private bool isFreezed = false;
 
     private bool isGrounded;
     private float gravityScale;
@@ -28,7 +30,7 @@ public class playerController : MonoBehaviour {
 
     private void FixedUpdate() {
 
-        if(lives <= 0) {
+        if(lives <= 0 || isFreezed) {
             return;
         }
 
@@ -58,28 +60,41 @@ public class playerController : MonoBehaviour {
                 return;
             }
 
-            cameraObj.GetComponent<gameUI>().gameOver();
+            cameraObj.GetComponent<gameСontroller>().gameOver();
             Debug.Log("wasted");
             
-            GetComponent<Rigidbody2D>().velocity = new Vector2(0, 0);
-            GetComponent<Rigidbody2D>().gravityScale = 0.0f;
-
+            freezePlayer();
         }
         if(col.tag == "finish") {
             lives = 0;
 
-            cameraObj.GetComponent<gameUI>().levelCompleted();
+            cameraObj.GetComponent<gameСontroller>().levelCompleted();
             Debug.Log("won");
             
-            GetComponent<Rigidbody2D>().velocity = new Vector2(0, 0);
-            GetComponent<Rigidbody2D>().gravityScale = 0.0f;
+            freezePlayer();
 
         }
     }
 
+    public void freezePlayer() {
+        freezedVelocity = GetComponent<Rigidbody2D>().velocity;
+        isFreezed = true;
+
+        GetComponent<Rigidbody2D>().velocity = new Vector2(0, 0);
+        GetComponent<Rigidbody2D>().gravityScale = 0.0f;
+    }
+    public void unfreezePlayer(bool returnVelocityOrNot) {
+        if(returnVelocityOrNot)
+            GetComponent<Rigidbody2D>().velocity = freezedVelocity;
+
+        isFreezed = false;
+
+        GetComponent<Rigidbody2D>().gravityScale = gravityScale;
+    }
+
     public void restartGame() {
         lives = startLives;
-        GetComponent<Rigidbody2D>().gravityScale = gravityScale;
+        unfreezePlayer(false);
 
         transform.position = new Vector2(0, 0);
     }
